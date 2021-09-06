@@ -1,3 +1,4 @@
+var pageContentE1 = document.querySelector("#page-content");
 var taskIdCounter = 0;
 var formE1 = document.querySelector("#task-form");
 var tasksToDoE1 = document.querySelector("#tasks-to-do");
@@ -70,7 +71,7 @@ var createTaskActions = function (taskId) {
     var deleteButtonE1 = document.createElement("button");
     deleteButtonE1.textContent = "Delete";
     deleteButtonE1.className = "btn delete-btn";
-    deleteButtonE1.setAttribute = ("data-task-id", taskId);
+    deleteButtonE1.setAttribute("data-task-id", taskId);
 
     actionContainerE1.appendChild(deleteButtonE1);
 
@@ -96,3 +97,46 @@ var createTaskActions = function (taskId) {
 };
 
 formE1.addEventListener("submit", taskFormHandler);
+
+var taskButtonHandler = function (event) {
+    //get target element from event;
+    var targetE1 = event.target;
+
+    //edit button was clicked 
+    if (targetE1.matches(".edit-btn")) {
+        var taskId = targetE1.getAttribute("data-task-id");
+        editTask(taskId);
+    } 
+    
+    //delete button was clicked
+    else if (targetE1.matches(".delete-btn")) {
+        var taskId = targetE1.getAttribute("data-task-id");
+        deleteTask(taskId);
+    }
+};
+
+var deleteTask = function (taskId) {
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+    taskSelected.remove();
+};
+
+var editTask = function(taskId) {
+    console.log("editing task #" + taskId);
+
+    //get task list item element
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    //get content from task name and type
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+   
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("select[name='task-type']").value = taskType;
+    document.querySelector("#save-task").textContent = "Save Task";
+
+    formE1.setAttribute("data-task-id", taskId);
+};
+
+
+pageContentE1.addEventListener("click", taskButtonHandler);
